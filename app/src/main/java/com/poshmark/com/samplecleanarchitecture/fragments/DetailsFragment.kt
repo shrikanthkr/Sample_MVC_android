@@ -1,5 +1,6 @@
 package com.poshmark.com.samplecleanarchitecture.fragments
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -17,7 +18,7 @@ import kotlinx.android.synthetic.main.fragment_details.submit
 
 class DetailsFragment : Fragment() {
 
-    lateinit var detailsViewModel: DetailsViewModel
+    private lateinit var detailsViewModel: DetailsViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,16 +30,28 @@ class DetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        submit.setOnClickListener { (requireActivity() as MainActivity).popBackStack(3) }
+        submit.setOnClickListener { (requireActivity() as MainActivity).popBackStack(4) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         detailsViewModel = ViewModelProviders.of(requireActivity()).get(DetailsViewModel::class.java)
         Log.d(TAG, "onActivityCreated: hashcode : " + detailsViewModel.hashCode())
-        name.text = detailsViewModel.name.orEmpty()
-        address.text = detailsViewModel.address.orEmpty()
-        phone.text = detailsViewModel.phone.orEmpty()
+        detailsViewModel.nameData.observe(this, Observer { onNameUpdate(it!!) })
+        detailsViewModel.addressData.observe(this, Observer { onAddressUpdate(it!!) })
+        detailsViewModel.phoneData.observe(this, Observer { onPhoneUpdate(it!!) })
+    }
+
+    private fun onNameUpdate(name: String) {
+        this.name.text = name
+    }
+
+    private fun onAddressUpdate(address: String) {
+        this.address.text = address
+    }
+
+    private fun onPhoneUpdate(phone: String) {
+        this.phone.text = phone
     }
 
     companion object {

@@ -1,20 +1,29 @@
 package com.poshmark.com.samplecleanarchitecture.viewmodel
 
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 
 class DetailsViewModel : ViewModel() {
 
-    var name: String? = null
-    var address: String? = null
-    var phone: String? = null
+    private val _mutableNameData = MutableLiveData<String>()
+    val nameData: LiveData<String> = _mutableNameData
 
-    fun clearState() {
-        name = null
-        address = null
-        phone = null
+    private val _mutableAddressData = MutableLiveData<String>()
+    val addressData: LiveData<String> = _mutableAddressData
+
+    private val _mutablePhoneData = MutableLiveData<String>()
+    val phoneData: LiveData<String> = _mutablePhoneData
+
+    fun setName(name: String) {
+        _mutableNameData.postValue(name)
     }
 
-    override fun onCleared() {
-        clearState()
+    fun setAddress(address: String) {
+        _mutableAddressData.postValue(address)
+    }
+
+    fun setPhone(phone: String) {
+        _mutablePhoneData.postValue(phone)
     }
 }
