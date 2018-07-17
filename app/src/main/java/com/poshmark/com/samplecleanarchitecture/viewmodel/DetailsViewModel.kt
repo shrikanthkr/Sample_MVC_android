@@ -3,6 +3,7 @@ package com.poshmark.com.samplecleanarchitecture.viewmodel
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import android.util.Log
 
 class DetailsViewModel : ViewModel() {
 
@@ -25,5 +26,10 @@ class DetailsViewModel : ViewModel() {
 
     fun setPhone(phone: String) {
         _mutablePhoneData.postValue(phone)
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        Log.d("ViewModel", "OnCleared is called ${hashCode()}")
     }
 }

@@ -1,29 +1,17 @@
 package com.poshmark.com.samplecleanarchitecture
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.poshmark.com.samplecleanarchitecture.fragments.HomeFragment
-import com.poshmark.com.samplecleanarchitecture.viewmodel.DetailsViewModel
+import com.poshmark.com.samplecleanarchitecture.fragments.SplashFragment
 
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var detailsViewModel: DetailsViewModel
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        detailsViewModel = ViewModelProviders.of(this).get(DetailsViewModel::class.java)
         supportFragmentManager.beginTransaction()
-            .add(R.id.fragment_container, HomeFragment())
-            .addToBackStack(null)
+            .add(R.id.fragment_container, SplashFragment())
             .commit()
-    }
-
-    fun popBackStack(n: Int) {
-        for (i in 0 until n) {
-            supportFragmentManager.popBackStack()
-        }
     }
 }

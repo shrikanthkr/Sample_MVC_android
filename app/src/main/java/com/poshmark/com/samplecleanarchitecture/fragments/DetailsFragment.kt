@@ -8,8 +8,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.poshmark.com.samplecleanarchitecture.MainActivity
 import com.poshmark.com.samplecleanarchitecture.R
+import com.poshmark.com.samplecleanarchitecture.utils.requireParentFragment
 import com.poshmark.com.samplecleanarchitecture.viewmodel.DetailsViewModel
 import kotlinx.android.synthetic.main.fragment_details.address
 import kotlinx.android.synthetic.main.fragment_details.name
@@ -30,12 +30,13 @@ class DetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        submit.setOnClickListener { (requireActivity() as MainActivity).popBackStack(4) }
+        submit.setOnClickListener { (parentFragment as? HomeFragment)?.popChildFragments(4) }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        detailsViewModel = ViewModelProviders.of(requireActivity()).get(DetailsViewModel::class.java)
+        detailsViewModel = ViewModelProviders.of(requireParentFragment())
+            .get(DetailsViewModel::class.java)
         Log.d(TAG, "onActivityCreated: hashcode : " + detailsViewModel.hashCode())
         detailsViewModel.nameData.observe(this, Observer { onNameUpdate(it!!) })
         detailsViewModel.addressData.observe(this, Observer { onAddressUpdate(it!!) })

@@ -6,34 +6,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.poshmark.com.samplecleanarchitecture.R
-import kotlinx.android.synthetic.main.fragment_home.start
+import kotlinx.android.synthetic.main.fragment_splash.next
 
-class HomeFragment : Fragment() {
+class SplashFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        return inflater.inflate(R.layout.fragment_splash, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        start.setOnClickListener {
-            childFragmentManager
+        next.setOnClickListener {
+            requireActivity().supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.fragment_container, NameFragment())
-                .addToBackStack(null)
+                .replace(R.id.fragment_container, HomeFragment())
                 .commit()
-            start.visibility = View.GONE
         }
-    }
-
-    fun popChildFragments(n: Int) {
-        for (i in 0 until n) {
-            childFragmentManager.popBackStack()
-        }
-        start.visibility = View.VISIBLE
     }
 }

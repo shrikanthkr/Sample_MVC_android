@@ -11,8 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.poshmark.com.samplecleanarchitecture.R;
+import com.poshmark.com.samplecleanarchitecture.utils.FragmentUtilsKt;
 import com.poshmark.com.samplecleanarchitecture.viewmodel.DetailsViewModel;
 
 public class AddressFragment extends Fragment {
@@ -24,7 +24,8 @@ public class AddressFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_address, container, false);
         final Button button = view.findViewById(R.id.submit);
         final EditText editText = view.findViewById(R.id.address);
@@ -32,7 +33,12 @@ public class AddressFragment extends Fragment {
             if (detailsViewModel != null) {
                 detailsViewModel.setAddress(editText.getText().toString());
             }
-            requireActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new PhoneFragment()).addToBackStack(null).commit();
+            final Fragment parentFragment = getParentFragment();
+            if (parentFragment != null) {
+                parentFragment.getChildFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new PhoneFragment())
+                        .addToBackStack(null).commit();
+            }
         });
         return view;
     }
@@ -40,7 +46,8 @@ public class AddressFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        detailsViewModel = ViewModelProviders.of(requireActivity()).get(DetailsViewModel.class);
+        final Fragment parentFragment = FragmentUtilsKt.requireParentFragment(this);
+        detailsViewModel = ViewModelProviders.of(parentFragment).get(DetailsViewModel.class);
         Log.d(TAG, "onActivityCreated: hashcode : " + detailsViewModel.hashCode());
     }
 
