@@ -16,6 +16,11 @@ class DetailsViewModel : ViewModel() {
     private val _mutablePhoneData = MutableLiveData<String>()
     val phoneData: LiveData<String> = _mutablePhoneData
 
+    private val _mutableLaunch = MutableLiveData<Fragments>()
+    val launch: LiveData<Fragments> = _mutableLaunch
+
+    val popMe = MutableLiveData<Boolean>()
+
     fun setName(name: String) {
         _mutableNameData.postValue(name)
     }
@@ -28,8 +33,20 @@ class DetailsViewModel : ViewModel() {
         _mutablePhoneData.postValue(phone)
     }
 
+    fun moveTo(fragments: Fragments) {
+        _mutableLaunch.postValue(fragments)
+    }
+
+    fun startFlow() {
+        _mutableLaunch.postValue(Fragments.HOME)
+    }
+
     override fun onCleared() {
         super.onCleared()
         Log.d("ViewModel", "OnCleared is called ${hashCode()}")
     }
+}
+
+enum class Fragments {
+    HOME, NAME, PHONE, ADDRESS, DETAILS
 }

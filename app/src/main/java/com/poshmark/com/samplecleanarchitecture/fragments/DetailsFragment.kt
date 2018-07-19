@@ -11,14 +11,21 @@ import android.view.ViewGroup
 import com.poshmark.com.samplecleanarchitecture.R
 import com.poshmark.com.samplecleanarchitecture.utils.requireParentFragment
 import com.poshmark.com.samplecleanarchitecture.viewmodel.DetailsViewModel
-import kotlinx.android.synthetic.main.fragment_details.address
-import kotlinx.android.synthetic.main.fragment_details.name
-import kotlinx.android.synthetic.main.fragment_details.phone
-import kotlinx.android.synthetic.main.fragment_details.submit
+import kotlinx.android.synthetic.main.fragment_details.*
 
 class DetailsFragment : Fragment() {
 
     private lateinit var detailsViewModel: DetailsViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        detailsViewModel = ViewModelProviders.of(requireParentFragment())
+            .get(DetailsViewModel::class.java)
+        Log.d(TAG, "onActivityCreated: hashcode : " + detailsViewModel.hashCode())
+        detailsViewModel.nameData.observe(this, Observer { onNameUpdate(it!!) })
+        detailsViewModel.addressData.observe(this, Observer { onAddressUpdate(it!!) })
+        detailsViewModel.phoneData.observe(this, Observer { onPhoneUpdate(it!!) })
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,20 +37,29 @@ class DetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        submit.setOnClickListener { (parentFragment as? HomeFragment)?.popChildFragments(4) }
+        submit.setOnClickListener {
+            detailsViewModel.popMe.postValue(true)
+            (parentFragment as? FlowFragment)?.popChildFragments()
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        detailsViewModel = ViewModelProviders.of(requireParentFragment())
-            .get(DetailsViewModel::class.java)
-        Log.d(TAG, "onActivityCreated: hashcode : " + detailsViewModel.hashCode())
-        detailsViewModel.nameData.observe(this, Observer { onNameUpdate(it!!) })
-        detailsViewModel.addressData.observe(this, Observer { onAddressUpdate(it!!) })
-        detailsViewModel.phoneData.observe(this, Observer { onPhoneUpdate(it!!) })
+        requireActivity().title = "Details"
+    }
+
+    override fun onStart() {
+        super.onStart()
+        Log.i(TAG, "onStart")
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.i(TAG, "onResume")
     }
 
     private fun onNameUpdate(name: String) {
+        Log.i(TAG, "Name update")
         this.name.text = name
     }
 

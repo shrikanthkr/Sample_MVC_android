@@ -11,9 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+
 import com.poshmark.com.samplecleanarchitecture.R;
 import com.poshmark.com.samplecleanarchitecture.utils.FragmentUtilsKt;
 import com.poshmark.com.samplecleanarchitecture.viewmodel.DetailsViewModel;
+import com.poshmark.com.samplecleanarchitecture.viewmodel.Fragments;
 
 public class AddressFragment extends Fragment {
 
@@ -22,22 +24,30 @@ public class AddressFragment extends Fragment {
     @Nullable
     private DetailsViewModel detailsViewModel;
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        final Fragment parentFragment = FragmentUtilsKt.requireParentFragment(this);
+        detailsViewModel = ViewModelProviders.of(parentFragment).get(DetailsViewModel.class);
+        Log.d(TAG, "onCreate: hashcode : " + detailsViewModel.hashCode());
+        detailsViewModel.getPopMe().observe(this, aBoolean -> {
+            if (aBoolean) {
+                ((FlowFragment) parentFragment).popChildFragments();
+            }
+        });
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+                             @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_address, container, false);
         final Button button = view.findViewById(R.id.submit);
         final EditText editText = view.findViewById(R.id.address);
         button.setOnClickListener(view1 -> {
             if (detailsViewModel != null) {
                 detailsViewModel.setAddress(editText.getText().toString());
-            }
-            final Fragment parentFragment = getParentFragment();
-            if (parentFragment != null) {
-                parentFragment.getChildFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, new PhoneFragment())
-                        .addToBackStack(null).commit();
+                detailsViewModel.moveTo(Fragments.PHONE);
             }
         });
         return view;
@@ -46,9 +56,6 @@ public class AddressFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        final Fragment parentFragment = FragmentUtilsKt.requireParentFragment(this);
-        detailsViewModel = ViewModelProviders.of(parentFragment).get(DetailsViewModel.class);
-        Log.d(TAG, "onActivityCreated: hashcode : " + detailsViewModel.hashCode());
+        requireActivity().setTitle("Address");
     }
-
 }
