@@ -8,12 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.poshmark.com.samplecleanarchitecture.R
 import kotlinx.android.synthetic.main.fragment_splash.*
+import java.util.*
 
 class SplashFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Log.d(TAG, "onCreate")
+        Log.d(TAG, "onCreate: Tag: $tag")
     }
 
     override fun onCreateView(
@@ -27,9 +28,11 @@ class SplashFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         next.setOnClickListener {
+            val tag = UUID.randomUUID().toString()
+            Log.d(TAG, "onViewCreated: tag: $tag")
             requireActivity().supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.fragment_container, FlowFragment())
+                .replace(R.id.fragment_container, FlowFragment.newInstance(this.tag.orEmpty()), tag)
                 .addToBackStack(null)
                 .commit()
         }
